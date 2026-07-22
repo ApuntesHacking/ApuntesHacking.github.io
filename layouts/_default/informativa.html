@@ -1,0 +1,20 @@
+{{ define "main" }}
+<div class="modulo-page-container">
+
+    <nav class="modulo-nav-top">
+        <a href="/" class="nav-back">← Volver al índice</a>
+    </nav>
+
+    <main class="modulo-main" style="grid-column: 1 / -1;">
+        <header class="modulo-header">
+            <h1 class="modulo-heading">{{ .Title }}</h1>
+        </header>
+
+        {{ .Content }}
+    </main>
+
+</div>
+
+<button class="back-to-top" id="backToTop" aria-label="Volver arriba">↑</button>
+<script src="{{ "js/modulo.js" | relURL }}"></script>
+{{ end }}

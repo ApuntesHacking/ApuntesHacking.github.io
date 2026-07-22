@@ -21,6 +21,11 @@
                 {{ end }}
             </div>
 
+            <div class="modulo-nav" style="display: flex; gap: 2rem;">
+                <a href="{{ "paginas/manifiesto/" | relURL }}" class="modulo-nav-btn modulo-nav-btn--manifiesto" style="--mod-color: #4DA8CB;">¿POR QUÉ EXISTE ESTA WEB?</a>
+                <a href="{{ "paginas/pendientes/" | relURL }}" class="modulo-nav-btn modulo-nav-btn--manifiesto" style="--mod-color: #FFC040;">Cosas pendientes</a>
+            </div>
+
             {{ with .Params.ultima_actualizacion }}
             <div class="last-update-message" style="margin-top: 40px; margin-bottom: 40px; text-align: center; font-family: 'Fira Code', monospace; font-size: 0.95rem; color: #8b949e; padding-top: 18px; width: 100%;">
                 Última actualización realizada el {{ . }}
