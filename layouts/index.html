@@ -1,0 +1,88 @@
+{{ define "main" }}
+<div class="container">
+
+    <!-- HERO -->
+    <header class="hero" style="justify-content: center;">
+        <div class="hero-content" style="max-width: 100%; display: flex; flex-direction: column; align-items: center;">
+
+            <div style="text-align: center; max-width: 950px; margin: 0 auto;">
+                <h1 class="hero-title">
+                    <span class="hero-line" style="white-space: nowrap;">{{ .Params.hero_title | safeHTML }}</span>
+                </h1><br>
+                <p class="hero-subtitle" style="max-width: 100%; font-size: clamp(0.95rem, 2.2vw, 1.3rem);">
+                    {{ .Params.hero_subtitle | safeHTML }}
+                </p><br>
+            </div>
+
+            <!-- BOTONES DE NAVEGACIÓN POR MÓDULOS (generados desde data/modulos.yaml) -->
+            <div class="modulo-nav">
+                {{ range site.Data.modulos }}
+                <a href="#modulo-{{ .num }}" class="modulo-nav-btn" style="--mod-color: {{ .color }};">{{ .nombre }}</a>
+                {{ end }}
+            </div>
+
+            {{ with .Params.ultima_actualizacion }}
+            <div class="last-update-message" style="margin-top: 40px; margin-bottom: 40px; text-align: center; font-family: 'Fira Code', monospace; font-size: 0.95rem; color: #8b949e; padding-top: 18px; width: 100%;">
+                Última actualización realizada el {{ . }}
+            </div>
+            {{ end }}
+
+            <div class="callout callout-tip">
+                <span class="callout-icon-map">🗺️</span>
+                <div class="callout-body">
+                    <strong>LEYENDA:</strong><br><br>
+                    <ul>
+                        <li><strong>[EN CONSTRUCCIÓN 🛠️]</strong> ➜ No está aún abierto al público. Aunque la página esté publicada puede sufrir cambios importantes.</li><br>
+                        <li><strong>[EN REVISIÓN ⚠️]</strong> ➜ La página ha sido publicada pero solo se ha revisado una vez (se revisa 2 veces antes de darlo por terminado), puede contener pequeños fallos.</li><br>
+                        <li><strong>Si no pone nada</strong> es que ha sido revisado y puesto a prueba por lo que se da por publicado y no se revisará a menos de que alguien lo pida.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ÍNDICE MAESTRO: cada módulo y cada entrada se generan solos a partir
+         del contenido que exista en content/paginas/ — nunca hay que tocar
+         esta página a mano al añadir una entrada nueva. -->
+    <main id="indice">
+        <div class="modulos-container">
+            {{ $todas := where site.RegularPages "Type" "paginas" }}
+            {{ range site.Data.modulos }}
+            {{ $modulo := . }}
+            {{ $entradas := where $todas "Params.modulo_num" $modulo.num }}
+            {{ $entradas := $entradas.ByWeight }}
+            <section class="modulo modulo-{{ printf "%02d" $modulo.num }}" id="modulo-{{ $modulo.num }}">
+                <h3 class="modulo-title"><span class="modulo-num">{{ printf "%02d" $modulo.num }}</span> {{ $modulo.nombre }}</h3>
+
+                {{ if eq (len $entradas) 0 }}
+                <p style="color: var(--text-muted); font-style: italic;">Todavía no hay entradas en este módulo. [EN CONSTRUCCIÓN 🛠️]</p>
+                {{ end }}
+
+                {{ range $entradas }}
+                {{ $permalink := .RelPermalink }}
+                <div class="tema" id="modulo-{{ $modulo.num }}-{{ .Params.tema_num }}">
+                    <h4 class="tema-title"><span class="tema-code">{{ .Params.tema_num }}</span><a href="{{ $permalink }}"> {{ .Params.tema_titulo }}</a></h4>
+                    {{ $subtemas := where .Params.subtemas "sub" "!=" true }}
+                    {{ if $subtemas }}
+                    <ul class="subtema-list">
+                        {{ range $subtemas }}
+                        <li><a href="{{ $permalink }}#{{ .anchor }}">{{ .label }}</a></li>
+                        {{ end }}
+                    </ul>
+                    {{ end }}
+                </div>
+                {{ end }}
+            </section>
+            {{ end }}
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p class="footer2">Sin copyright. Copia sin miedo. Si lo mejoras, compártelo. El conocimiento no se posee, se comparte.</p>
+        <p class="footer1">Construido con pasión y café ☕</p>
+        <p class="footer3">{{ now.Format "2006" }} — FCK MONDAYS, FCK WORK, FCK CAPITALISM, FCK COPYRIGHT, FCK EVERYTHING</p>
+        <p class="footer4">Página web libre de cookies y rastreadores</p>
+    </footer>
+</div>
+{{ end }}

@@ -1,0 +1,22 @@
+baseURL = "https://apunteshacking.com/"
+languageCode = "es-es"
+title = "Apuntes Hacking"
+
+# Permite HTML en bruto dentro del Markdown (necesario para los bloques de
+# código con spans de colores, callouts, etc.)
+[markup.goldmark.renderer]
+  unsafe = true
+
+[markup.goldmark.parser]
+  wrapStandAloneImageWithinParagraph = false
+
+[params]
+  description = "Enciclopedia de hacking ético y OPSEC en castellano."
+
+# No usamos categorías/etiquetas ni la página de listado automática de
+# /paginas/ (el índice real es la portada), así que las desactivamos.
+disableKinds = ["taxonomy", "term", "section"]
+
+[outputs]
+  home = ["HTML"]
+  page = ["HTML"]

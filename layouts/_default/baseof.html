@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {{ partial "head.html" . }}
+</head>
+<body{{ with .Params.accent }} style="--accent: {{ . | safeCSS }}; --accent-dim: {{ $.Params.accent_dim | safeCSS }}; --accent-glow: {{ $.Params.accent_glow | safeCSS }};"{{ end }}>
+{{ block "main" . }}{{ end }}
+</body>
+</html>

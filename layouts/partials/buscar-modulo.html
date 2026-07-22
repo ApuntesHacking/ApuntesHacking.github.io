@@ -1,0 +1,8 @@
+{{ $num := . }}
+{{ $encontrado := dict }}
+{{ range site.Data.modulos }}
+  {{ if eq .num $num }}
+    {{ $encontrado = . }}
+  {{ end }}
+{{ end }}
+{{ return $encontrado }}

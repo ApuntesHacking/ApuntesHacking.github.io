@@ -1,0 +1,78 @@
+{{ define "main" }}
+{{ $modulo := partial "buscar-modulo.html" .Params.modulo_num }}
+{{ $subtemasTop := where .Params.subtemas "sub" "!=" true }}
+
+<div class="modulo-page-container">
+
+    <nav class="modulo-nav-top">
+        <a href="/#modulo-{{ .Params.modulo_num }}" class="nav-back">← Volver al índice</a>
+        <div class="nav-modulo-info">
+            <span class="nav-modulo-num" style="--mod-color: {{ $modulo.color }};">Módulo {{ $modulo.num }} — {{ $modulo.nombre }}</span>
+        </div>
+        {{ if $subtemasTop }}
+        <div class="nav-controls">
+            <select class="nav-tema-select" id="temaSelect" aria-label="Saltar a tema">
+                <option value="">Saltar a tema...</option>
+                {{ range $subtemasTop }}
+                <option value="#{{ .anchor }}">{{ .label }}</option>
+                {{ end }}
+            </select>
+        </div>
+        {{ end }}
+    </nav>
+
+    <main class="modulo-main">
+
+        <header class="modulo-header">
+            <p class="modulo-breadcrumb">
+                <a href="/">Índice</a>
+                <span class="breadcrumb-sep">/</span>
+                <a href="/#modulo-{{ .Params.modulo_num }}">Módulo {{ $modulo.num }} — {{ $modulo.nombre }}</a>
+            </p>
+            <h1 class="modulo-heading">
+                <span class="modulo-heading-num" style="--mod-color: {{ $modulo.color }};">{{ .Params.tema_num }}</span>
+                {{ .Params.tema_titulo }}
+            </h1>
+            {{ with .Params.tema_desc }}<p class="modulo-desc">{{ . }}</p>{{ end }}
+        </header>
+
+        {{ .Content }}
+
+        {{ $todas := (where site.RegularPages "Type" "paginas").ByWeight }}
+        {{ $posicion := -1 }}
+        {{ range $i, $p := $todas }}
+            {{ if eq $p.RelPermalink $.RelPermalink }}{{ $posicion = $i }}{{ end }}
+        {{ end }}
+        <nav class="tema-pagination">
+            {{ if gt $posicion 0 }}
+            {{ $anterior := index $todas (sub $posicion 1) }}
+            <a href="{{ $anterior.RelPermalink }}" class="pagination-prev">← {{ $anterior.Params.tema_num }} {{ $anterior.Params.tema_titulo }}</a>
+            {{ else }}
+            <span class="pagination-prev disabled">←</span>
+            {{ end }}
+            {{ if lt $posicion (sub (len $todas) 1) }}
+            {{ $siguiente := index $todas (add $posicion 1) }}
+            <a href="{{ $siguiente.RelPermalink }}" class="pagination-next">{{ $siguiente.Params.tema_num }} {{ $siguiente.Params.tema_titulo }} →</a>
+            {{ else }}
+            <span class="pagination-next disabled">→</span>
+            {{ end }}
+        </nav>
+
+    </main>
+
+    {{ if .Params.subtemas }}
+    <aside class="modulo-sidebar" id="moduloSidebar">
+        <h3 class="sidebar-heading">En esta página</h3>
+        <nav class="sidebar-temas">
+            {{ range .Params.subtemas }}
+            <a href="#{{ .anchor }}" class="{{ if .sub }}sidebar-subtema-link{{ else }}sidebar-tema-link{{ end }}">{{ .label }}</a>
+            {{ end }}
+        </nav>
+    </aside>
+    {{ end }}
+
+</div>
+
+<button class="back-to-top" id="backToTop" aria-label="Volver arriba">↑</button>
+<script src="{{ "js/modulo.js" | relURL }}"></script>
+{{ end }}
