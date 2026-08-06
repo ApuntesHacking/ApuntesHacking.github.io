@@ -21,22 +21,8 @@
                 {{ end }}
             </div>
 
-            {{ with .Params.ultima_actualizacion }}
-            <div class="last-update-message" style="margin-top: 40px; margin-bottom: 40px; text-align: center; font-family: 'Fira Code', monospace; font-size: 0.95rem; color: #8b949e; padding-top: 18px; width: 100%;">
-                Última actualización realizada el {{ . }}
-            </div>
-            {{ end }}
-
-            <div class="callout callout-tip">
-                <span class="callout-icon-map">🗺️</span>
-                <div class="callout-body">
-                    <strong>LEYENDA:</strong><br><br>
-                    <ul>
-                        <li><strong>[EN CONSTRUCCIÓN 🛠️]</strong> ➜ No está aún abierto al público. Aunque la página esté publicada puede sufrir cambios importantes.</li><br>
-                        <li><strong>[EN REVISIÓN ⚠️]</strong> ➜ La página ha sido publicada pero solo se ha revisado una vez (se revisa 2 veces antes de darlo por terminado), puede contener pequeños fallos.</li><br>
-                        <li><strong>Si no pone nada</strong> es que ha sido revisado y puesto a prueba por lo que se da por publicado y no se revisará a menos de que alguien lo pida.</li>
-                    </ul>
-                </div>
+            <div class="modulo-nav" style="display: flex; gap: 2rem;">
+                <a href="{{ "paginas/manifiesto/" | relURL }}" class="modulo-nav-btn modulo-nav-btn--manifiesto" style="--mod-color: #4DA8CB;">¿POR QUÉ EXISTE ESTA WEB?</a>
             </div>
 
         </div>

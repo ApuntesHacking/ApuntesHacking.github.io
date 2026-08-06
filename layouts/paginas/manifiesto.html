@@ -1,0 +1,100 @@
+{{ define "main" }}
+<style>
+    .mnf-root {
+        --mnf-bg: #0a0a0a;
+        --mnf-text: #c5c5c5;
+        --mnf-text-bright: #e0e0e0;
+        --mnf-accent: #c8f000;
+        --mnf-accent-dim: rgba(200, 240, 0, 0.25);
+        --mnf-accent2: #ff3c3c;
+        --mnf-border: #1f1f1f;
+        --mnf-muted: #666;
+        --mnf-max-width: 1020px;
+
+        background-color: var(--mnf-bg);
+        color: var(--mnf-text);
+        font-family: 'Courier New', Courier, monospace;
+        line-height: 1.9;
+        font-size: 22px;
+        padding: 3rem 1.5rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .mnf-container { max-width: var(--mnf-max-width); width: 100%; }
+
+    .mnf-nav-top, .mnf-nav-bottom { margin-bottom: 2rem; }
+    .mnf-nav-bottom {
+        margin-top: 4rem; margin-bottom: 0; padding-top: 1.5rem;
+        border-top: 1px solid var(--mnf-border);
+    }
+
+    .mnf-btn-back {
+        display: inline-block; color: var(--mnf-accent); text-decoration: none;
+        font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;
+        border: 1px solid var(--mnf-accent-dim); padding: 0.5rem 1rem;
+        transition: background 0.2s, color 0.2s;
+    }
+    .mnf-btn-back:hover { background: var(--mnf-accent); color: var(--mnf-bg); }
+    .mnf-btn-back::before { content: '← '; }
+
+    .mnf-root h2 {
+        font-family: 'Arial Black', 'Impact', 'Helvetica Neue', sans-serif;
+        font-weight: 900; font-size: 1.3rem; color: var(--mnf-accent);
+        text-transform: uppercase; letter-spacing: 0.08em;
+        margin-top: 3rem; margin-bottom: 1.2rem; padding-bottom: 0.4rem;
+        border-bottom: 1px solid var(--mnf-accent-dim);
+    }
+
+    .mnf-root p { margin-bottom: 1.2rem; }
+    .mnf-root strong { color: var(--mnf-text-bright); font-weight: normal; }
+
+    .mnf-harto-list {
+        list-style: none; margin: 1.2rem 0 1.5rem;
+        display: flex; flex-direction: column; gap: 0.9rem;
+    }
+    .mnf-harto-list li { padding-left: 1.5rem; position: relative; }
+    .mnf-harto-list li::before {
+        content: '—'; position: absolute; left: 0; color: var(--mnf-accent2);
+    }
+
+    .mnf-final-block {
+        margin-top: 3.5rem; padding-top: 2rem;
+        border-top: 1px solid var(--mnf-border);
+    }
+    .mnf-final-line-2 {
+        font-size: 1.6rem; font-weight: 900; color: var(--mnf-accent);
+        text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    .mnf-cursor {
+        display: inline-block; width: 10px; height: 1em;
+        background: var(--mnf-accent); margin-left: 4px;
+        vertical-align: text-bottom; animation: mnf-blink 1s step-end infinite;
+    }
+    @keyframes mnf-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    @media (max-width: 600px) {
+        .mnf-root { padding: 2rem 1rem; font-size: 18px; }
+        .mnf-root h2 { margin-top: 2.5rem; font-size: 1.1rem; }
+        .mnf-final-line-2 { font-size: 1.1rem; }
+        .mnf-btn-back { font-size: 0.75rem; padding: 0.4rem 0.8rem; }
+    }
+</style>
+
+<div class="mnf-root">
+<div class="mnf-container">
+
+    <div class="mnf-nav-top">
+        <a href="{{ "/" | relURL }}" class="mnf-btn-back">Volver</a>
+    </div>
+
+    {{ .Content }}
+
+    <div class="mnf-nav-bottom">
+        <a href="{{ "/" | relURL }}" class="mnf-btn-back">Volver</a>
+    </div>
+
+</div>
+</div>
+{{ end }}
