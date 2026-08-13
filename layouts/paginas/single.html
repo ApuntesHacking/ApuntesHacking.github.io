@@ -1,6 +1,6 @@
 {{ define "main" }}
 {{ $modulo := partial "buscar-modulo.html" .Params.modulo_num }}
-{{ $subtemasTop := where .Params.subtemas "sub" "!=" true }}
+{{ $subtemasTop := where (default slice .Params.subtemas) "sub" "!=" true }}
 
 <div class="modulo-page-container">
 

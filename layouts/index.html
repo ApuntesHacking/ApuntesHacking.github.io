@@ -30,34 +30,61 @@
 
     <!-- ÍNDICE MAESTRO: cada módulo y cada entrada se generan solos a partir
          del contenido que exista en content/paginas/ — nunca hay que tocar
-         esta página a mano al añadir una entrada nueva. -->
+         esta página a mano al añadir una entrada nueva. El módulo 0
+         (Write-ups) es la única excepción: en vez de páginas propias,
+         enlaza directo a archivos externos listados en data/writeups.yaml. -->
     <main id="indice">
         <div class="modulos-container">
             {{ $todas := where site.RegularPages "Type" "paginas" }}
             {{ range site.Data.modulos }}
             {{ $modulo := . }}
-            {{ $entradas := where $todas "Params.modulo_num" $modulo.num }}
-            {{ $entradas := $entradas.ByWeight }}
             <section class="modulo modulo-{{ printf "%02d" $modulo.num }}" id="modulo-{{ $modulo.num }}">
                 <h3 class="modulo-title"><span class="modulo-num">{{ printf "%02d" $modulo.num }}</span> {{ $modulo.nombre }}</h3>
 
-                {{ if eq (len $entradas) 0 }}
-                <p style="color: var(--text-muted); font-style: italic;">Todavía no hay entradas en este módulo. [EN CONSTRUCCIÓN 🛠️]</p>
-                {{ end }}
+                {{ if eq $modulo.num 0 }}
 
-                {{ range $entradas }}
-                {{ $permalink := .RelPermalink }}
-                <div class="tema" id="modulo-{{ $modulo.num }}-{{ .Params.tema_num }}">
-                    <h4 class="tema-title"><span class="tema-code">{{ .Params.tema_num }}</span><a href="{{ $permalink }}"> {{ .Params.tema_titulo }}</a></h4>
-                    {{ $subtemas := where .Params.subtemas "sub" "!=" true }}
-                    {{ if $subtemas }}
-                    <ul class="subtema-list">
-                        {{ range $subtemas }}
-                        <li><a href="{{ $permalink }}#{{ .anchor }}">{{ .label }}</a></li>
-                        {{ end }}
-                    </ul>
+                    {{ if eq (len site.Data.writeups) 0 }}
+                    <p style="color: var(--text-muted); font-style: italic;">Todavía no hay write-ups publicados.</p>
                     {{ end }}
-                </div>
+
+                    {{ $writeupsNumerados := slice }}
+                    {{ range $i, $w := site.Data.writeups }}
+                        {{ $writeupsNumerados = $writeupsNumerados | append (dict "num" (printf "0.%d" (add $i 1)) "titulo" $w.titulo "url" $w.url) }}
+                    {{ end }}
+                    {{ $total := len $writeupsNumerados }}
+                    {{ if gt $total 0 }}
+                    {{ range $idx := seq $total -1 1 }}
+                    {{ $w := index $writeupsNumerados (sub $idx 1) }}
+                    <div class="tema">
+                        <h4 class="tema-title"><span class="tema-code">{{ $w.num }}</span><a href="{{ $w.url }}" target="_blank" rel="noopener noreferrer"> {{ $w.titulo }}</a> <span class="tema-code" style="color: #00E5FF; background: rgba(0, 229, 255, 0.15);">PDF</span></h4>
+                    </div>
+                    {{ end }}
+                    {{ end }}
+
+                {{ else }}
+
+                    {{ $entradas := where $todas "Params.modulo_num" $modulo.num }}
+                    {{ $entradas := $entradas.ByWeight }}
+
+                    {{ if eq (len $entradas) 0 }}
+                    <p style="color: var(--text-muted); font-style: italic;">Todavía no hay entradas en este módulo. [EN CONSTRUCCIÓN 🛠️]</p>
+                    {{ end }}
+
+                    {{ range $entradas }}
+                    {{ $permalink := .RelPermalink }}
+                    <div class="tema" id="modulo-{{ $modulo.num }}-{{ .Params.tema_num }}">
+                        <h4 class="tema-title"><span class="tema-code">{{ .Params.tema_num }}</span><a href="{{ $permalink }}"> {{ .Params.tema_titulo }}</a></h4>
+                        {{ $subtemas := where (default slice .Params.subtemas) "sub" "!=" true }}
+                        {{ if $subtemas }}
+                        <ul class="subtema-list">
+                            {{ range $subtemas }}
+                            <li><a href="{{ $permalink }}#{{ .anchor }}">{{ .label }}</a></li>
+                            {{ end }}
+                        </ul>
+                        {{ end }}
+                    </div>
+                    {{ end }}
+
                 {{ end }}
             </section>
             {{ end }}
