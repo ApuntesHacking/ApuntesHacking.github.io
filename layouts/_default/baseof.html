@@ -5,5 +5,14 @@
 </head>
 <body{{ with .Params.accent }} style="--accent: {{ . | safeCSS }}; --accent-dim: {{ $.Params.accent_dim | safeCSS }}; --accent-glow: {{ $.Params.accent_glow | safeCSS }};"{{ end }}>
 {{ block "main" . }}{{ end }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('pre code').forEach(function (block) {
+      if (block.closest('.code-block')) return; // ya coloreado a mano por el shortcode "code", no tocar
+      hljs.highlightElement(block);
+    });
+  });
+</script>
 </body>
 </html>

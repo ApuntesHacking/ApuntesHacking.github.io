@@ -1,0 +1,93 @@
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-lang">{{ .Get 0 | default "bash" }}</span>
+    <button class="copy-btn" onclick="copiarCodigo(this)">Copiar</button>
+  </div>
+  <pre><code>{{- $inner := .Inner -}}
+{{- $lines := split (trim $inner "\n") "\n" -}}
+{{- $cmdWords := slice "sudo" "apt" "pacman" "ls" "grep" "cat" "cd" "mkdir" "mount" "umount" "cryptsetup" "btrfs" "systemctl" "journalctl" "sgdisk" "mkfs" "echo" "printf" "chmod" "chown" "passwd" "useradd" "visudo" "vim" "nano" "reboot" "exit" "ping" "iwctl" "wifi-menu" "fwupdmgr" "fwupd" "efibootmgr" "bootctl" "sbctl" "zramctl" "aa-status" "aa-enabled" "findmnt" "blkid" "nft" "ss" "resolvectl" "timedatectl" "arch-chroot" "genfstab" "locale-gen" "hwclock" "userdel" "usermod" "groupmod" "shred" "borg" "aide" "auditctl" "ausearch" "wc" "id" "df" "du" "free" "uname" "lsblk" -}}
+{{- $opWords := slice "&&" "||" "|" ">" "<" ">>" "<<" ";" -}}
+{{- $letters := slice "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" -}}
+{{- range $i, $line := $lines -}}
+  {{- if gt $i 0 }}
+{{ end -}}
+  {{- $trimmed := trim $line " \t" -}}
+  {{- if hasPrefix $trimmed "#" -}}
+    {{- printf "<span class=\"code-comment\">%s</span>" (htmlEscape $line) | safeHTML -}}
+  {{- else -}}
+    {{- /* 1) separar un comentario final tipo "comando   # explicación" */ -}}
+    {{- $code := $line -}}
+    {{- $trailComment := "" -}}
+    {{- $tail := findRE "\\s{2,}#.*$" $line -}}
+    {{- if gt (len $tail) 0 -}}
+      {{- $marker := index $tail 0 -}}
+      {{- $code = strings.TrimSuffix $marker $line -}}
+      {{- $trailComment = $marker -}}
+    {{- end -}}
+
+    {{- /* 2) extraer cadenas entre comillas antes de tokenizar, para que
+           una frase con espacios ("TPM OK") viaje como un único token */ -}}
+    {{- $strMatches := findRE "\"[^\"]*\"|'[^']*'" $code -}}
+    {{- $strSpans := slice -}}
+    {{- range $si, $sm := $strMatches -}}
+      {{- $ph := printf "\x04%s\x04" (index $letters $si) -}}
+      {{- $code = replace $code $sm $ph 1 -}}
+      {{- $strSpans = $strSpans | append (printf "<span class=\"code-str\">%s</span>" (htmlEscape $sm)) -}}
+    {{- end -}}
+
+    {{- /* 3) tokenizar en palabras y espacios; cada palabra se clasifica
+           UNA sola vez, por eso no hay forma de que una pasada rompa
+           el resultado de otra */ -}}
+    {{- $result := slice -}}
+    {{- $tokens := findRE "\\S+|\\s+" $code -}}
+    {{- range $tok := $tokens -}}
+      {{- if eq (trim $tok " \t") "" -}}
+        {{- $result = $result | append $tok -}}
+      {{- else -}}
+        {{- $strIdx := -1 -}}
+        {{- range $si, $letter := $letters -}}
+          {{- if eq $tok (printf "\x04%s\x04" $letter) -}}
+            {{- $strIdx = $si -}}
+          {{- end -}}
+        {{- end -}}
+        {{- if ge $strIdx 0 -}}
+          {{- $result = $result | append (index $strSpans $strIdx) -}}
+        {{- else -}}
+          {{- $esc := htmlEscape $tok -}}
+          {{- $isFlag := false -}}
+          {{- if and (hasPrefix $tok "-") (gt (len $tok) 1) -}}
+            {{- if gt (len (findRE "^[a-zA-Z]" (substr $tok 1 1))) 0 -}}
+              {{- $isFlag = true -}}
+            {{- end -}}
+          {{- end -}}
+          {{- if $isFlag -}}
+            {{- $result = $result | append (printf "<span class=\"code-flag\">%s</span>" $esc) -}}
+          {{- else if strings.Contains $tok "/" -}}
+            {{- $result = $result | append (printf "<span class=\"code-path\">%s</span>" $esc) -}}
+          {{- else if hasPrefix $tok "$" -}}
+            {{- $result = $result | append (printf "<span class=\"code-var\">%s</span>" $esc) -}}
+          {{- else if gt (len (findRE "^[0-9]+$" $tok)) 0 -}}
+            {{- $result = $result | append (printf "<span class=\"code-num\">%s</span>" $esc) -}}
+          {{- else if eq $tok "sudo" -}}
+            {{- $result = $result | append (printf "<span class=\"code-sudo\">%s</span>" $esc) -}}
+          {{- else if in $cmdWords $tok -}}
+            {{- $result = $result | append (printf "<span class=\"code-cmd\">%s</span>" $esc) -}}
+          {{- else if in $opWords $tok -}}
+            {{- $result = $result | append (printf "<span class=\"code-op\">%s</span>" $esc) -}}
+          {{- else if gt (len (findRE "^[A-Za-z_][A-Za-z0-9_]*=" $tok)) 0 -}}
+            {{- $result = $result | append (printf "<span class=\"code-var\">%s</span>" $esc) -}}
+          {{- else -}}
+            {{- $result = $result | append $esc -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- $out := delimit $result "" -}}
+    {{- if ne $trailComment "" -}}
+      {{- $out = printf "%s<span class=\"code-comment\">%s</span>" $out (htmlEscape $trailComment) -}}
+    {{- end -}}
+    {{- $out | safeHTML -}}
+  {{- end -}}
+{{- end -}}</code></pre>
+</div>

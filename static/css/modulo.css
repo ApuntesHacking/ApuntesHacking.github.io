@@ -447,6 +447,7 @@ body {
 
 /* ============ SINTAXIS RESALTADA PARA BASH ============ */
 .code-cmd      { color: #4ddbff; font-weight: 600; }
+.code-sudo     { color: #FF4D6A; font-weight: 500; font-style: italic; }
 .code-flag     { color: #FF9F43; }
 .code-ip       { color: #6BCB77; }
 .code-path     { color: #FFD93D; }
@@ -583,3 +584,40 @@ pre code.hljs {
 /* Símbolos especiales
    → teal como .code-var */
 .hljs-symbol { color: #4BCBA5; }
+
+/* Refuerzo de resaltado para Bash */
+.hljs {
+    color: #C8CCD4;
+}
+
+.hljs-keyword,
+.hljs-built_in {
+    color: #4ddbff;
+    font-weight: 600;
+}
+
+.hljs-string {
+    color: #8BDF4B;
+}
+
+.hljs-comment {
+    color: #BFBFBF;
+    font-style: italic;
+}
+
+.hljs-number {
+    color: #AD4BB5;
+}
+
+.hljs-variable,
+.hljs-literal,
+.hljs-params {
+    color: #FF9F43;
+}
+
+/* Sin negrita global en el código: cada token toma su color del span correspondiente */
+.tema-content pre code,
+.code-block pre code {
+    font-weight: normal;
+    color: #C8CCD4;
+}

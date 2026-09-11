@@ -73,7 +73,7 @@
                     {{ range $entradas }}
                     {{ $permalink := .RelPermalink }}
                     <div class="tema" id="modulo-{{ $modulo.num }}-{{ .Params.tema_num }}">
-                        <h4 class="tema-title"><span class="tema-code">{{ .Params.tema_num }}</span><a href="{{ $permalink }}"> {{ .Params.tema_titulo }}</a></h4>
+                        <h4 class="tema-title"><span class="tema-code">{{ .Params.tema_num }}</span><a href="{{ $permalink }}"> {{ .Params.tema_titulo }}</a>{{ if .Params.etiqueta }} <span class="tema-code" style="color: #FF6B4D; background: rgba(255, 107, 77, 0.15);">{{ .Params.etiqueta }}</span>{{ end }}</h4>
                         {{ $subtemas := where (default slice .Params.subtemas) "sub" "!=" true }}
                         {{ if $subtemas }}
                         <ul class="subtema-list">
